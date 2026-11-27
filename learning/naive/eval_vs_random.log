@@ -1,0 +1,112 @@
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 400 KiB, CODE 1270 KiB, MIPS 258 KiB, TOTAL 4635 KiB, avg. IPI 4.913204
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 411 KiB, CODE 1310 KiB, MIPS 266 KiB, TOTAL 4693 KiB, avg. IPI 4.916924
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 398 KiB, CODE 1257 KiB, MIPS 255 KiB, TOTAL 4616 KiB, avg. IPI 4.915457
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 406 KiB, CODE 1275 KiB, MIPS 260 KiB, TOTAL 4646 KiB, avg. IPI 4.896373
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 402 KiB, CODE 1290 KiB, MIPS 262 KiB, TOTAL 4660 KiB, avg. IPI 4.923420
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 396 KiB, CODE 1258 KiB, MIPS 256 KiB, TOTAL 4616 KiB, avg. IPI 4.911808
+random  n= 12  score    353.3 (max 560)  distance       6521
+[W1126 18:51:02.928410516 NNPACK.cpp:62] Could not initialize NNPACK! Reason: Unsupported hardware.
+loaded checkpoint from update 5100
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 408 KiB, CODE 1298 KiB, MIPS 264 KiB, TOTAL 4676 KiB, avg. IPI 4.914343
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 413 KiB, CODE 1301 KiB, MIPS 265 KiB, TOTAL 4685 KiB, avg. IPI 4.901646
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 425 KiB, CODE 1370 KiB, MIPS 278 KiB, TOTAL 4778 KiB, avg. IPI 4.921351
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 428 KiB, CODE 1374 KiB, MIPS 279 KiB, TOTAL 4787 KiB, avg. IPI 4.925186
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 425 KiB, CODE 2507 KiB, MIPS 275 KiB, TOTAL 5913 KiB, avg. IPI 9.088731
+Regular mmap to address 0x10000000 succeeded
+Regular mmap to address 0x10200000 succeeded
+Regular mmap to address 0x10400000 succeeded
+Regular mmap to address 0x10600000 succeeded
+Regular mmap to address 0x2fc00000 succeeded
+Regular mmap to address 0x10800000 succeeded
+Memory map is sub-par. Emitted code will be slow.
+Using 32-bit LUT
+Lightrec RAM usage: IR 459 KiB, CODE 1456 KiB, MIPS 295 KiB, TOTAL 4916 KiB, avg. IPI 4.932033
+policy  n= 12  score    430.8 (max 900)  distance      10501

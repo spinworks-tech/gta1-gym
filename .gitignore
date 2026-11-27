@@ -1,0 +1,41 @@
+.venv/
+__pycache__/
+*.pyc
+runs/
+scratch/
+third_party/
+bios/*
+roms/*
+config/boot.state
+# generated episode start states (savestates of copyrighted game RAM)
+config/boot_states/
+
+# local working notes, not for publication
+TODO.md
+tests/*.so
+!bios/.gitkeep
+!roms/.gitkeep
+
+# recorded play sessions (contain savestates of copyrighted game RAM)
+recordings/
+config/contrib_start.state
+contrib_out/
+
+# training outputs: checkpoints and TensorBoard event files
+*.pt
+*.pth
+events.out.tfevents.*
+
+# never commit game data, BIOS or savestates, wherever they end up
+*.state
+*.bin
+*.BIN
+*.cue
+*.chd
+*.iso
+*.img
+*.pbp
+*.zip
+*.npy
+*.npz
+*.so

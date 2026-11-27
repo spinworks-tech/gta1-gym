@@ -1,0 +1,43 @@
+{
+  "about": "Reference setup for contributed play sessions. See CONTRIBUTE.md.",
+  "boot_script": [
+    ["none", 4400],
+    ["cross", 4], ["none", 900],
+    ["cross", 4], ["none", 900],
+    ["cross", 4], ["none", 900]
+  ],
+  "start_state_sha256": "8bf1d90c7aba70ebe0dc1f6222c037f3438cd8f1d96ad1cd9285eb9183ad316c",
+  "bios_mode": "auto",
+  "bios": {
+    "name": "SCPH1001.BIN",
+    "note": "SCPH-1001, v2.2 12/04/95, NTSC-U",
+    "size": 524288,
+    "md5": "924e392ed05558ffdb115408c263dccf",
+    "sha256": "71af94d1e47a68c11e8fdb9f8368040601514a42a5a399cda48c7d3bff1e99d3"
+  },
+  "disc": {
+    "name": "Grand Theft Auto (USA)",
+    "note": "SLUS-00106, Redump multi-track rip",
+    "files": {
+      "Grand Theft Auto (USA).cue": "d3c221b0612c4d9d0b94241945775115cafe760fa0cf1667cf3b493be1e61c2d",
+      "Grand Theft Auto (USA) (Track 01).bin": "fd7bc3271d638208de6fedf20f193e21a0f89680077f2cac49156511310c9572",
+      "Grand Theft Auto (USA) (Track 02).bin": "43ef9f6c572bf1301cb436810c8a8c09c0c246dae1c327e499b6d2e3696afc67",
+      "Grand Theft Auto (USA) (Track 03).bin": "c55648232fe6a255cf0a31b70e7142ff85ae91ebf7218447ea8d69095a644390",
+      "Grand Theft Auto (USA) (Track 04).bin": "700d9dced8ec2ee68204f05eac902b2bc5e9883dec79102885449fcf661b4958",
+      "Grand Theft Auto (USA) (Track 05).bin": "8a1f66f1807b1582869699ca7643a89dee3779fd4dc7ce9bf5d790d904d7f2d4",
+      "Grand Theft Auto (USA) (Track 06).bin": "449ae910dc798f6c08e19d993d4ab4883c5c62b8df52c2d0097706f8500af2c2",
+      "Grand Theft Auto (USA) (Track 07).bin": "1911c56efa715348442ce6afb9936daef608d4da54af4737b698b342e88e9d19",
+      "Grand Theft Auto (USA) (Track 08).bin": "63ae85a52f0af8fff135eea3076bb843d4fba75b2badc09fcccc094c3543e180",
+      "Grand Theft Auto (USA) (Track 09).bin": "73ee1bbbe63d362fb1d27690a3c21c70a30b554783dac715da860f718169eae2",
+      "Grand Theft Auto (USA) (Track 10).bin": "e8fcf20d52879e63181234c4f53f44c741ff7a8c10d1b99f1ce17fe9b5b94d4a",
+      "Grand Theft Auto (USA) (Track 11).bin": "d925d3feacac1b2b3e18becfb6acdf9570347913da8f2a70d60c4ccbf57c6018"
+    }
+  },
+  "core": {
+    "repo": "https://github.com/libretro/pcsx_rearmed",
+    "commit": "0f544ce1d18ac7dd114cb8f5507f01a29d3cd58c",
+    "build": "make -f Makefile.libretro platform=unix",
+    "reference_sha256": "cc0ed8b73dab59fe19850ba3e653d2aaf4f00b7059c79352f5465364dc7ab762",
+    "reference_compiler": "gcc 13.3.0 (Ubuntu 24.04), x86-64"
+  }
+}

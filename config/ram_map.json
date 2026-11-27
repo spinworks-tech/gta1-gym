@@ -1,0 +1,25 @@
+{
+  "fields": {
+    "player_x": {
+      "address": 2147666284,
+      "note": "16.16 fixed point world X",
+      "scale": 1.52587890625e-05,
+      "signed": true,
+      "size": 4
+    },
+    "player_y": {
+      "address": 2147666288,
+      "note": "16.16 fixed point world Y",
+      "scale": 1.52587890625e-05,
+      "signed": true,
+      "size": 4
+    },
+    "score": {
+      "address": 2147664624,
+      "note": "HUD score in dollars; verified 0/100/200",
+      "scale": 1.0,
+      "signed": false,
+      "size": 4
+    }
+  }
+}
