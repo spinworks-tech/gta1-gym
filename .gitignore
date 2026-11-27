@@ -39,3 +39,6 @@ events.out.tfevents.*
 *.npy
 *.npz
 *.so
+
+# Recorded policy videos: large binaries, and they embed game frames
+media/
