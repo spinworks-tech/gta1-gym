@@ -96,6 +96,10 @@ def main():
     ap.add_argument("--out", default="scratch/policy.mp4")
     ap.add_argument("--search", type=int, default=16,
                     help="episodes to try before recording the best")
+    ap.add_argument("--search-from", type=int, default=0,
+                    help="first seed of the search range")
+    ap.add_argument("--no-record", action="store_true",
+                    help="search only; print the table and stop")
     ap.add_argument("--episode-steps", type=int, default=4500)
     ap.add_argument("--max-steps", type=int, default=None,
                     help="cap recorded steps (default: whole episode)")
@@ -134,7 +138,7 @@ def main():
         cap = args.max_steps or args.episode_steps
         if args.seed is None:
             results = []
-            for s in range(args.search):
+            for s in range(args.search_from, args.search_from + args.search):
                 sc, steps, dist = play(env, agent, device, s, cap)
                 results.append((sc, s, steps, dist))
                 print(f"  seed {s:3d}  score {sc:7.0f}  steps {steps:5d}  "
@@ -148,8 +152,17 @@ def main():
         else:
             best_seed = args.seed
 
+        if args.no_record:
+            return
         os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+        # The core reports a frame size only once it has rendered one, so
+        # with --seed (which skips the search) this is still 0x0 and the
+        # writer silently refuses to open. Probe with a real frame.
+        if not (env.core.width and env.core.height):
+            env.reset(seed=best_seed)
         h, w = env.core.height, env.core.width
+        if not (w and h):
+            raise RuntimeError("emulator reported no frame size")
         note = "real time" if args.fps == 15 else f"{args.fps / 15:g}x speed"
         writer = cv2.VideoWriter(args.out,
                                  cv2.VideoWriter_fourcc(*"mp4v"),
