@@ -355,6 +355,109 @@ navigate menus over SSH without copying screenshots around. Record a
 command sequence to a file and replay it with `--script` to rebuild a
 boot state reproducibly.
 
+## Performance
+
+Every number below was measured on one machine, and a modest one. It is
+worth naming, because these are reference points from
+fourteen-year-old silicon rather than a ceiling:
+
+| | |
+|---|---|
+| CPU | Intel Xeon E5-2690 @ 2.9 GHz — 8 cores / 16 threads (Sandy Bridge-EP, 2012) |
+| GPU | NVIDIA GTX 1050 Ti, 4 GiB |
+| RAM | 62 GiB |
+
+`tools/bench.py` reproduces the sampling figures on your own hardware.
+
+### Sampling is the bottleneck
+
+Roughly one core per environment; the policy network is trivial by
+comparison and the GPU idles most of the loop. Observations stay uint8
+from the emulator all the way into VRAM, and only the last frame of each
+frameskip window is converted to RGB — the other three are never looked
+at, so they skip conversion entirely.
+
+Measured in-game, frameskip 4:
+
+| workers | agent steps/s | emulated fps | vs. realtime |
+|---|---|---|---|
+| 1 | 457 | 1,826 | 30× |
+| 8 | 1,411 | 5,645 | 94× |
+| 16 | 1,886 | 7,543 | 126× |
+
+Per-worker throughput falls off well before the core count — these are
+memory-bandwidth bound, not compute bound — so measure rather than
+assuming linear scaling.
+
+### Pipelining the rollout
+
+In training the emulators also have to share with the policy, so the
+rollout is pipelined: the envs are split into two halves stepped out of
+phase, and while one half's emulators are busy the other half's
+observations go through the GPU. Each env's own trajectory stays
+contiguous in time, so PPO is unaffected. The pipeline is also left full
+across update boundaries, which keeps the emulators working during the
+optimize phase. Measured with 12 envs:
+
+| | rollout | optimize | throughput |
+|---|---|---|---|
+| lockstep (`--no-pipeline`) | 2.10 s | 0.47 s | 597 steps/s |
+| pipelined (default) | 1.22 s | 0.47 s | **911 steps/s** |
+
+1.53×, taking a 10M-step run from 4.7 h to 3.0 h. Going from 12 to 16
+envs adds only 2%, so there is little left to win from more workers.
+
+### Observation resolution is cheaper than it looks
+
+Measured with 12 envs, geometry the only variable:
+
+| observation | pixels | throughput | cost |
+|---|---|---|---|
+| 84×84 (DQN default) | 7,056 | 885 steps/s | baseline |
+| 128×96 (4:3, current) | 12,288 | 770 steps/s | −13% for 1.7× the pixels |
+| 160×120 (4:3) | 19,200 | 650 steps/s | −27% for 2.7× the pixels |
+
+Pixels scale sub-linearly into cost, because the resize is a small part
+of a step next to emulating four frames. That matters, because 84×84
+throws away most of the frame: measured against the native 320×240, it
+retains 22% of the high-frequency detail versus 37% at 160×120. Paying
+13% of throughput to see the road is a good trade, and 128×96 is the
+default for that reason. (The 128×96 row is taken from a training run
+that also carries the novelty reward — a set lookup per step, well under
+a percent.)
+
+### Where the time actually goes
+
+One update is 1536 steps across 12 envs at 128×96:
+
+| | |
+|---|---|
+| rollout | 1.26 s |
+| optimize | 0.69 s |
+| GPU during rollout | 11–14% |
+| GPU during optimize | 79–83% |
+| VRAM | 811 MiB of 4,096 |
+| CPU busy | ~5.8 of 16 threads |
+
+The GPU is near-idle for two-thirds of every update and never uses a
+quarter of its memory, so a bigger card buys nothing here — the 1050 Ti
+is not what is slow. More physical cores would help, and so would the
+unexploited trick of toggling the libretro video-enable bit on frames
+the agent never sees, which would skip rasterisation entirely on three
+frames in four.
+
+### Training runs end to end
+
+| run | observation | steps | throughput | wall clock |
+|---|---|---|---|---|
+| [naive baseline](learning/naive/) | 84×84 | 10M | 866 steps/s | 3.2 h |
+| run 2 | 128×96 | 10M | 770 steps/s | 3.6 h (projected, in flight) |
+
+10M agent steps is 40M emulated frames — about 7.7 days of game time at
+60 fps, compressed into three and a half hours on one desktop GPU and a
+2012 Xeon. That is the number that makes the project practical: a full
+training run is an afternoon, not a cluster booking.
+
 ## Notes
 
 **Determinism.** Same savestate plus same actions gives the same
@@ -370,41 +473,6 @@ exploration diversity comes from `noop_max` and `sticky_prob`.
 uses one spawned process per emulator, pinned to a CPU, sharing only the
 observation block.
 
-**Sampling is the bottleneck.** Roughly one core per environment; the
-policy network is trivial by comparison and the GPU idles most of the
-loop. Observations stay uint8 from the emulator all the way into VRAM,
-and only the last frame of each frameskip window is converted to RGB —
-the other three are never looked at, so they skip conversion entirely.
-
-Measured in-game on a Xeon E5-2690 (8 cores / 16 threads), frameskip 4:
-
-| workers | agent steps/s | emulated fps | vs. realtime |
-|---|---|---|---|
-| 1 | 457 | 1,826 | 30× |
-| 8 | 1,411 | 5,645 | 94× |
-| 16 | 1,886 | 7,543 | 126× |
-
-Per-worker throughput falls off well before the core count — these are
-memory-bandwidth bound, not compute bound — so measure with
-`tools/bench.py` on your own hardware rather than assuming linear
-scaling.
-
-In training the emulators also have to share with the policy, so the
-rollout is pipelined: the envs are split into two halves stepped out of
-phase, and while one half's emulators are busy the other half's
-observations go through the GPU. Each env's own trajectory stays
-contiguous in time, so PPO is unaffected. The pipeline is also left full
-across update boundaries, which keeps the emulators working during the
-optimize phase. Measured with 12 envs:
-
-| | rollout | optimize | throughput |
-|---|---|---|---|
-| lockstep (`--no-pipeline`) | 2.10 s | 0.47 s | 597 steps/s |
-| pipelined (default) | 1.22 s | 0.47 s | **911 steps/s** |
-
-1.53x, taking a 10M-step run from 4.7 h to 3.0 h. Going from 12 to 16
-envs adds only 2%, so there is little left to win from more workers.
-
 ## Training approaches
 
 Each training approach that has actually been run is written up under
@@ -415,8 +483,12 @@ modes, so the reasoning behind the current defaults is recoverable:
 |---|---|
 | [learning/naive/](learning/naive/) | sparse score + constant dense movement shaping. Return rose 11.5 → 15.0, but ~80% of the gain was the movement term, not the game. Baseline; do not build on. |
 
-`train_jepa.py` is the model-based alternative, not yet run on the real
-game. It learns a LeJEPA-style world model (CNN encoder, action-conditioned
+`train_jepa.py` is the model-based alternative. It has been run on the
+real game, but only on random-play data, where it did no better than the
+"nothing changes" copy baseline: a random agent stays on foot and stands
+still about 70% of the time, so there is little action signal to learn.
+It is paused until a PPO policy or human recordings supply data where
+the player drives. It learns a LeJEPA-style world model (CNN encoder, action-conditioned
 latent predictor, SIGReg instead of EMA/stop-grad, a reward/death head),
 trains the policy inside it on imagined rollouts, and loops: collect →
 world model → policy → evaluate. Each stage is cached under
