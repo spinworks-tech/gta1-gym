@@ -63,11 +63,33 @@ def main():
     ap.add_argument("--boot-state", default=None,
                     help="file or directory of start states")
     ap.add_argument("--episode-steps", type=int, default=4500)
+    ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
+
+    # act() SAMPLES from the policy distribution, so without seeding torch
+    # two runs of this script on one checkpoint disagree wildly -- enough to
+    # flip which arm looks better. Seed it.
+    torch.manual_seed(args.seed)
 
     device = torch.device("cuda")
     cfg = {"episode_steps": args.episode_steps,
            "distance_scale": 0.001}
+
+    # The observation geometry is part of the policy's shape, so a
+    # checkpoint trained at 128x96 cannot be loaded into an 84x84 trunk.
+    # Take it from the checkpoint rather than from the env defaults, so
+    # evaluating a run never needs flags that restate its own config.
+    _ck_args = torch.load(args.ckpt, map_location="cpu",
+                          weights_only=False).get("args") or {}
+    if not isinstance(_ck_args, dict):
+        _ck_args = vars(_ck_args)
+    for _key in ("obs_width", "obs_height", "frame_stack", "color"):
+        if _ck_args.get(_key) is not None:
+            cfg[_key if _key != "color" else "grayscale"] = (
+                not _ck_args[_key] if _key == "color" else _ck_args[_key])
+    print(f"checkpoint geometry: {cfg.get('obs_width', 84)}x"
+          f"{cfg.get('obs_height', 84)} "
+          f"stack {cfg.get('frame_stack', 4)}", flush=True)
     if args.boot_state:
         cfg["boot_state"] = os.path.abspath(args.boot_state)
     rng = np.random.default_rng(0)
@@ -79,7 +101,8 @@ def main():
             agent = None
             if label == "policy":
                 agent = ActorCritic(vec.single_obs_shape[0], nact, obs_hw=vec.single_obs_shape[1:]).to(device)
-                ck = torch.load(args.ckpt, map_location=device, weights_only=True)
+                ck = torch.load(args.ckpt, map_location=device,
+                                weights_only=False)
                 agent.load_state_dict(ck["model"])
                 agent.eval()
                 print(f"loaded checkpoint from update {ck.get('update')}", flush=True)
@@ -89,8 +112,10 @@ def main():
         e = out[label]
         if e:
             sc = np.array([x[0] for x in e]); ds = np.array([x[1] for x in e])
-            print(f"{label:7s} n={len(e):3d}  score {sc.mean():8.1f} "
-                  f"(max {sc.max():.0f})  distance {ds.mean():10.0f}", flush=True)
+            print(f"{label:7s} n={len(e):3d}  score median {np.median(sc):7.0f} "
+                  f"[q25 {np.percentile(sc, 25):.0f}, q75 "
+                  f"{np.percentile(sc, 75):.0f}]  mean {sc.mean():7.0f} "
+                  f"max {sc.max():.0f}  distance {ds.mean():9.0f}", flush=True)
         else:
             print(f"{label:7s} no completed episodes", flush=True)
 

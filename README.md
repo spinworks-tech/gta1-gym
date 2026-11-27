@@ -451,7 +451,7 @@ frames in four.
 | run | observation | steps | throughput | wall clock |
 |---|---|---|---|---|
 | [naive baseline](learning/naive/) | 84×84 | 10M | 866 steps/s | 3.2 h |
-| run 2 | 128×96 | 10M | 770 steps/s | 3.6 h (projected, in flight) |
+| run 2 | 128×96 | 10M | 770 steps/s | 3.6 h |
 
 10M agent steps is 40M emulated frames — about 7.7 days of game time at
 60 fps, compressed into three and a half hours on one desktop GPU and a
