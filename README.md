@@ -347,6 +347,7 @@ do the thing, snapshot again, load back.
 | `tools/make_boot_states.py` | build a directory of varied episode start states |
 | `tools/eval_policy.py` | score and distance of a checkpoint vs. random |
 | `tools/record_policy.py` | search for a high-scoring episode and record it to mp4 |
+| `tools/find_phones.py` | locate mission phones by teleporting the player across the map |
 | `tools/play.py` | play in a browser or a desktop window and record the session (see [PLAY.md](PLAY.md)) |
 | `tools/replay.py` | turn recordings into `(obs, action, reward)` datasets |
 | `tools/contrib.py` | check a contributor's setup; pack and unpack submitted sessions (see [CONTRIBUTE.md](CONTRIBUTE.md)) |
