@@ -1,5 +1,96 @@
 {
   "fields": {
+    "ammo_flame": {
+      "address": 2147664980,
+      "note": "flamethrower ammo; 99 under cheat bit 0x2",
+      "scale": 1.0,
+      "signed": false,
+      "size": 2
+    },
+    "ammo_mg_rocket": {
+      "address": 2147664978,
+      "note": "two bytes, machine gun and rocket ammo (order unknown); 0x6363 under cheat bit 0x2",
+      "scale": 1.0,
+      "signed": false,
+      "size": 2
+    },
+    "ammo_pistol": {
+      "address": 2147664977,
+      "note": "pistol ammo (byte); 99 under cheat bit 0x2; CodeBreaker 8002C450 6300",
+      "scale": 1.0,
+      "signed": false,
+      "size": 1
+    },
+    "armor": {
+      "address": 2147664952,
+      "note": "armor; 0 at start, 3 under all-weapons cheat bit 0x2",
+      "scale": 1.0,
+      "signed": false,
+      "size": 2
+    },
+    "bonus_mult": {
+      "address": 2147664962,
+      "note": "bonus multiplier; 1 at start, 5 under cheat bit 0x20",
+      "scale": 1.0,
+      "signed": false,
+      "size": 2
+    },
+    "cheat_flags": {
+      "address": 2147642756,
+      "note": "cheat bitmask, read at level load (writing it mid-level freezes play on the brief). Verified by booting with each bit: 0x1 99 lives, 0x2 weapons+ammo+armor+key, 0x4 score 9999990, 0x8 coords in district banner, 0x10 max wanted, 0x20 5x bonus, 0x40-0x400 unlock levels progressively, 0x800 all levels, 0x2000 no cops (unverified effect)",
+      "scale": 1.0,
+      "signed": false,
+      "size": 2
+    },
+    "ctrl_x": {
+      "address": 2147664644,
+      "note": "world x of whatever the player controls (on foot or the car), integer units; derived (writes don't stick). Unlike player_x, it keeps updating while driving",
+      "scale": 1.0,
+      "signed": true,
+      "size": 4
+    },
+    "ctrl_y": {
+      "address": 2147664648,
+      "note": "world y of whatever the player controls; see ctrl_x",
+      "scale": 1.0,
+      "signed": true,
+      "size": 4
+    },
+    "jail_key": {
+      "address": 2147664990,
+      "note": "get-out-of-jail-free key; 1 under cheat bit 0x2",
+      "scale": 1.0,
+      "signed": false,
+      "size": 2
+    },
+    "jobs_done": {
+      "address": 2147664973,
+      "note": "candidate job-completion counter: 0 -> 1 on delivering job 1, unchanged by accepting, death or a later failed job. Only one completion observed",
+      "scale": 1.0,
+      "signed": false,
+      "size": 1
+    },
+    "lives": {
+      "address": 2147664966,
+      "note": "lives; 4 at start; 4->3 on a real death; 99 under cheat bit 0x1",
+      "scale": 1.0,
+      "signed": false,
+      "size": 2
+    },
+    "mission_stage": {
+      "address": 2147590144,
+      "note": "mission phase byte, not monotonic. Job 1: 4 no job, 3 accepted, 2 in Jimmy's car (+5000), 3 after delivery (+20000, timed follow-up offered), 2 after that follow-up timed out. Survives death",
+      "scale": 1.0,
+      "signed": false,
+      "size": 1
+    },
+    "no_job": {
+      "address": 2147590248,
+      "note": "1 before any job, 0 once one is accepted; stayed 0 through delivery and the failed follow-up",
+      "scale": 1.0,
+      "signed": false,
+      "size": 1
+    },
     "player_x": {
       "address": 2147666284,
       "note": "16.16 fixed point world X",
@@ -20,6 +111,13 @@
       "scale": 1.0,
       "signed": false,
       "size": 4
+    },
+    "wanted": {
+      "address": 2147664728,
+      "note": "wanted level 0-4 (HUD police heads); 4 under max-wanted cheat bit; writing it sets the HUD (0x80019FE4 follows); natural rise from crime not yet observed",
+      "scale": 1.0,
+      "signed": false,
+      "size": 1
     }
   }
 }

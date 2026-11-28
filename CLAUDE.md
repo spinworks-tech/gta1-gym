@@ -21,11 +21,19 @@ and BIOS. Savestates embed copyrighted game RAM and are gitignored
 Top-down, open-world, Liberty City. The things that matter for RL:
 
 **Missions come from phones.** You start on foot with no objective except
-a tutorial line: *"Answer the South Park phones to get jobs."* Walking
-into a live phone offers a job; completing it pays and advances the
-chapter. **Phones activate one at a time** — at game start exactly one is
-live in the whole district, so finding only a single phone in a map sweep
-is the correct answer, not a bug.
+a tutorial line: *"Answer the South Park phones to get jobs."* The South
+Park phones are **a row of four booths at y ≈ 8722, x ≈ 7855 / 7919 /
+7983 / 8047, all live at game start** (red markers above each); the start
+arrow points at them. Standing on one accepts its job (brief in the brief
+channel), the markers vanish and the others go quiet. Jobs are not timed
+and survive death. Positions are in `config/phones.json`.
+
+The centre-channel message at (6100, 9575) — *"YOU WANT YOUR JOB AT
+PIZZA SHED BACK?"* — is a **pager advert, not a phone**: no job starts.
+`tools/find_phones.py` detects centre messages, so it finds pagers.
+
+Job 1 (x 7855, "Crazy Jimmy's dumped a car…") has been completed end to
+end — see *Mission state* below.
 
 **Score is the HUD dollar figure.** It rises from jobs, and also from
 incidental carnage — running people over, explosions, vehicle damage.
@@ -60,6 +68,12 @@ subtract the `0x80000000` base.
 | `player_x` | `0x8002C96C` | `0x2C96C` | int32, 16.16 fixed point |
 | `player_y` | `0x8002C970` | `0x2C970` | int32, 16.16 fixed point |
 | `score` | `0x8002C2F0` | `0x2C2F0` | uint32, HUD dollars |
+| `lives` | `0x8002C446` | `0x2C446` | uint16; 4 at start, verified 4→3 on death |
+| `wanted` | `0x8002C358` | `0x2C358` | byte 0–4; write-verified against the HUD |
+| `bonus_mult` | `0x8002C442` | `0x2C442` | uint16; 1 at start |
+| `armor` | `0x8002C438` | `0x2C438` | uint16 |
+| ammo pistol / mg+rocket / flame | `0x8002C451` / `C452-3` / `C454` | | bytes |
+| `cheat_flags` | `0x80026D84` | `0x26D84` | bitmask, see below |
 | brief text | `0x800444DC` | `0x444DC` | C string |
 | brief on/off | `0x80019FF8` | `0x19FF8` | byte |
 | brief kind | `0x8001A00C` | `0x1A00C` | uint32 |
@@ -72,13 +86,50 @@ Observed play sits around x 5000–9000, y 7000–11000.
 The map lives in `config/ram_map.json`; text addresses are in
 `gta1env/text.py`.
 
+### Mission state
+
+| what | address | notes |
+|---|---|---|
+| `ctrl_x`, `ctrl_y` | `0x8002C304/08` int32 | position of whatever the player controls; keeps updating in cars |
+| `mission_stage` | `0x8001A000` u8 | phase byte, **not monotonic** (see below) |
+| `no_job` | `0x8001A068` u8 | 1 before the first job, 0 after |
+| `jobs_done` | `0x8002C44D` u8 | 0 → 1 on completing job 1; candidate, one completion seen |
+| job brief text | `0x80027FD6` | C string of the current job's brief |
+
+Job 1 played end to end (savestates in `config/mission_states/`,
+gitignored):
+
+| event | `mission_stage` | score |
+|---|---|---|
+| start | 4 | 0 |
+| accept at phone (7855, 8722) | 3 | 0 |
+| enter Jimmy's car at (10726, 6237) | 2 | +5000 |
+| drive it into Dulli's garage, east face of the block at (7396, 6697), front-first heading west | 3 | **+20000** |
+| timed follow-up ("talk to Jimmy at the South West Park subway") expires after ~600 steps | 2 | — |
+
+After that, three park phones are live: the finished job's phone is gone.
+**Job pay arrives as score**, so the existing score term already rewards
+finishing a job; nothing extra is needed to detect completion.
+
+**`player_x/y` freeze while in a vehicle.** They are the on-foot
+position; `ctrl_x/y` follow the car. The movement rewards in runs 1–2
+read `player_x/y` — check this against the `enter_exit` exploit before
+the next run.
+
+### Moving a car (diagnostics only)
+
+The car's authoritative position is in its object record, not the copies
+next to it. For job 1's car: x `0x8001C258`, y `0x8001C25C` (16.16); writing
+both relocates it. The heading copies (`0x8001C2DC` and six others, 1024
+per turn, 256 = east, 512 = north) are read-only; to face a direction,
+drive a circle and stop when the heading reads right. Placement inside a
+building is refused (the car snaps back). The garage door message
+("Wait for the garage door to open…") fires near (7560–7600, 6738).
+
 ### Still unknown
 
-**Lives and wanted level.** Not located. Death is therefore inferred by a
-heuristic: a position jump of `respawn_distance` (1500 world units) in one
-step is treated as a respawn. Finding the real addresses needs a scripted
-death — drive into water — snapshotted with `tools/drive.py` and diffed
-with `tools/ram_scan.py`.
+The objective's world position in RAM (the arrow's target); how
+`jobs_done` behaves past one completion.
 
 ### RAM is writable, and that is a research tool
 

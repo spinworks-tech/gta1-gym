@@ -1,6 +1,32 @@
 {
-  "note": "world coords; found by teleport sweep",
+  "note": "world coords. The four South Park phones are one booth row at y~8722, all live at game start (red markers above each); the start arrow points at them (triangulated to (7927, 8602)). Standing on one accepts its job; the others go quiet until it ends. Probed on a 64-unit grid, so zone extents are unmeasured.",
   "phones": [
+    {
+      "kind": "job",
+      "x": 7855,
+      "y": 8722,
+      "brief": "Crazy Jimmy's dumped a car in North East Park. Find it before..."
+    },
+    {
+      "kind": "job",
+      "x": 7919,
+      "y": 8722,
+      "brief": "The Angels wasted one of our guys and split with the shit. Bubby wants it back."
+    },
+    {
+      "kind": "job",
+      "x": 7983,
+      "y": 8722,
+      "brief": "The new police chief wants a bigger cut. Bubby wants him dead..."
+    },
+    {
+      "kind": "job",
+      "x": 8047,
+      "y": 8722,
+      "brief": "We need two yellow cabs for a bank job. Bring 'em to the docks in New Guernsey."
+    }
+  ],
+  "pagers": [
     {
       "message": "YOU WANT YOUR JOB AT PIZZA SHED BACK? CALL ME! CHAD.",
       "x": 6087.5,
@@ -13,7 +39,9 @@
         9475.0,
         9700.0
       ],
-      "points": 16
+      "points": 16,
+      "kind": "pager",
+      "note": "pager advert, not a phone: no job starts here, the arrow does not change"
     }
   ]
 }

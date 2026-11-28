@@ -165,8 +165,9 @@ class RewardShaper:
         # so movement can be used as a dense bootstrap signal.
         self.distance_scale = distance_scale
         self.max_step_distance = max_step_distance
-        # No lives address is known yet, so death is inferred from a large
-        # jump in position. Measured over 40k steps: ordinary motion peaks
+        # The lives field (0x2C446) now detects death exactly; this jump test
+        # is kept as a fallback for RAM maps without it. Death is inferred
+        # from a large jump in position. Measured over 40k steps: ordinary motion peaks
         # near 32 units/step, entering or leaving a vehicle snaps the player
         # by up to ~512, and a real teleport was ~5200. The threshold sits
         # well above the vehicle snaps -- a lower one would penalise getting

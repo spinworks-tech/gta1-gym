@@ -129,25 +129,27 @@ def main():
         p.close()
 
     phones = cluster(hits, args.step)
-    print(f"\n{len(hits)} hit points -> {len(phones)} phone(s)")
+    print(f"\n{len(hits)} hit points -> {len(phones)} pager zone(s)")
     for ph in phones:
         print(f"  ({ph['x']:.0f}, {ph['y']:.0f})  {ph['points']:3d} pts  "
               f"x{ph['x_range']} y{ph['y_range']}")
         print(f"      {ph['message'][:70]!r}")
     if phones:
         os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
-        prev = []
+        # A sweep hit is a centre (pager) message, not a job phone -- real
+        # phones answer in the brief channel. Keep them apart, and keep
+        # whatever else the file records.
+        doc = {"note": "world coords; found by teleport sweep"}
         if os.path.exists(args.out):
             with open(args.out) as fh:
-                prev = json.load(fh).get("phones", [])
+                doc = json.load(fh)
+        prev = doc.get("pagers", [])
         merged = {(round(q["x"]), round(q["y"])): q for q in prev}
         for ph in phones:
-            merged[(round(ph["x"]), round(ph["y"]))] = ph
+            merged[(round(ph["x"]), round(ph["y"]))] = dict(ph, kind="pager")
+        doc["pagers"] = sorted(merged.values(), key=lambda q: (q["x"], q["y"]))
         with open(args.out, "w") as fh:
-            json.dump({"note": "world coords; found by teleport sweep",
-                       "phones": sorted(merged.values(),
-                                        key=lambda q: (q["x"], q["y"]))},
-                      fh, indent=2)
+            json.dump(doc, fh, indent=2)
         print(f"\nwrote {args.out} ({len(merged)} total)")
 
 
