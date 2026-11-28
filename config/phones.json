@@ -1,0 +1,19 @@
+{
+  "note": "world coords; found by teleport sweep",
+  "phones": [
+    {
+      "message": "YOU WANT YOUR JOB AT PIZZA SHED BACK? CALL ME! CHAD.",
+      "x": 6087.5,
+      "y": 9587.5,
+      "x_range": [
+        5975.0,
+        6200.0
+      ],
+      "y_range": [
+        9475.0,
+        9700.0
+      ],
+      "points": 16
+    }
+  ]
+}

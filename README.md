@@ -475,6 +475,14 @@ exploration diversity comes from `noop_max` and `sticky_prob`.
 uses one spawned process per emulator, pinned to a CPU, sharing only the
 observation block.
 
+## Probing the game
+
+PS1 RAM is exposed writable, which makes it possible to ask the game
+counterfactual questions — put the player somewhere it would never reach
+and see how the game responds. [docs/ram-writes.md](docs/ram-writes.md)
+documents the technique, the phone locations it found, and the three ways
+it is easy to get a confidently wrong answer.
+
 ## Training approaches
 
 Each training approach that has actually been run is written up under
