@@ -91,6 +91,7 @@ The map lives in `config/ram_map.json`; text addresses are in
 | what | address | notes |
 |---|---|---|
 | `ctrl_x`, `ctrl_y` | `0x8002C304/08` int32 | position of whatever the player controls; keeps updating in cars |
+| `target_x`, `target_y` | `0x800442E0/E4` int32 16.16 | where the yellow arrow points; read-only |
 | `mission_stage` | `0x8001A000` u8 | phase byte, **not monotonic** (see below) |
 | `no_job` | `0x8001A068` u8 | 1 before the first job, 0 after |
 | `jobs_done` | `0x8002C44D` u8 | 0 → 1 on completing job 1; candidate, one completion seen |
@@ -126,10 +127,30 @@ drive a circle and stop when the heading reads right. Placement inside a
 building is refused (the car snaps back). The garage door message
 ("Wait for the garage door to open…") fires near (7560–7600, 6738).
 
+### The objective arrow's target
+
+`target_x/y` at `0x800442E0/E4` is the point the yellow arrow points at.
+Found by searching RAM for the arrow-triangulated targets of two job
+states at once; only this pair matched both. It agrees with triangulation
+in five states:
+
+| state | target |
+|---|---|
+| no job | (7935, 8736) — the middle of the phone row |
+| job 1 accepted | (10720, 6240) — Jimmy's car |
+| in Jimmy's car | (7328, 6688) — Dulli's garage |
+| follow-up offered | (7008, 7776) — the South West Park subway phone (triangulated 7014, 7756) |
+| follow-up failed | (7935, 8736) — back to the phones |
+
+It is rewritten every frame, so writing it does nothing. Distance from
+`ctrl_x/y` to `target_x/y` is a dense objective signal: a shaping term on
+its *decrease* rewards heading wherever the game currently wants you.
+Watch out for the usual exploits, e.g. a target that jumps (stage changes)
+should not pay the jump.
+
 ### Still unknown
 
-The objective's world position in RAM (the arrow's target); how
-`jobs_done` behaves past one completion.
+How `jobs_done` behaves past one completion.
 
 ### RAM is writable, and that is a research tool
 

@@ -112,6 +112,20 @@
       "signed": false,
       "size": 4
     },
+    "target_x": {
+      "address": 2147762912,
+      "note": "objective arrow target, 16.16 world x; read-only (the game rewrites it every frame). Matches arrow triangulation in 5 states: phone row (7935,8736) with no job, Jimmy's car, Dulli's garage, the follow-up subway phone (7008,7776), and back to the phones after failure",
+      "scale": 1.52587890625e-05,
+      "signed": true,
+      "size": 4
+    },
+    "target_y": {
+      "address": 2147762916,
+      "note": "objective arrow target, 16.16 world y; read-only (the game rewrites it every frame). Matches arrow triangulation in 5 states: phone row (7935,8736) with no job, Jimmy's car, Dulli's garage, the follow-up subway phone (7008,7776), and back to the phones after failure",
+      "scale": 1.52587890625e-05,
+      "signed": true,
+      "size": 4
+    },
     "wanted": {
       "address": 2147664728,
       "note": "wanted level 0-4 (HUD police heads); 4 under max-wanted cheat bit; writing it sets the HUD (0x80019FE4 follows); natural rise from crime not yet observed",
